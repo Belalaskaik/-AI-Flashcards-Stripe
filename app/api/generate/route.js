@@ -29,5 +29,5 @@ export async function POST(req) {
     })
 
 const flashcards = JSON.parse(completion.choices[0].message.content)
-return NextResponse.json(flashcards.flashcard)
+return NextResponse.json(flashcards.flashcards)
 }
