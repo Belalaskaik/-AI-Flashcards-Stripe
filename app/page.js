@@ -1,94 +1,82 @@
-import Image from "next/image";
+import Image from 'next/image'
+import getStripe from '@/utils/get-stripe'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { Container, AppBar, Typography, Toolbar, Button, Box, Grid } from '@mui/material'
+import Head from 'next/head'
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Container maxWidth="lg">
+      <Head>
+        <title>Flashcard SaaS</title>
+        <meta name="description" content="Create flashcard from your text" />
+      </Head>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant='h6' style={{ flexGrow: 1 }}>
+            Flashcard SaaS
+          </Typography>
+          <SignedOut>
+            <Button color="inherit"> Login</Button>
+            <Button color="inherit">Sign Up</Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{
+        textAlign: 'center',
+        my: 4,
+      }}>
+        <Typography variant='h2'>Welcome to Flashcard SaaS</Typography>
+        <Typography variant='h5'>
+          {' '}
+          The easiest way to create flashcards from scratch
+        </Typography>
+        <Button variant='contained' color='primary' sx={{ mt: 2 }}>
+          Get Started
+        </Button>
+      </Box>
+      <Box sx={{ my: 6 }}>
+        <Typography variant='h4'>
+          Features
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={4}></Grid>
+          <Typography variant='h6'>Easy Text Input</Typography>
+          <Typography>Simply input your text and let our software do the rest. Creating
+            flashcards has never been easier.</Typography>
+        </Grid>
+          <Typography variant='h6'>Smart Flashcards</Typography>
+          <Typography>Our AI intelligently breaks down your text into concise flashcards,
+            perfect for studying.</Typography>
+          <Typography variant='h6'>Accessible Anywhere</Typography>
+          <Typography>Access your flashcards from any device, at any time.
+            Study on the go with ease.</Typography>
+      </Box>
+      <Box sx={{ my: 6, textAlign: 'center' }}>
+        <Typography variant='h4'>Pricing</Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={4}></Grid>
+          <Box sx={{
+            p: 3,
+            border: '1px solid',
+            borderColor: 'grey.300',
+            borderRadius: 2,
+          }}></Box>
+          <Typography variant='h6'>Easy Text Input</Typography>
+          <Typography>Simply input your text and let our software do the rest. Creating
+            flashcards has never been easier.</Typography>
+        </Grid>
+          <Typography variant='h6'>Smart Flashcards</Typography>
+          <Typography>Our AI intelligently breaks down your text into concise flashcards,
+            perfect for studying.</Typography>
+          <Typography variant='h6'>Accessible Anywhere</Typography>
+          <Typography>Access your flashcards from any device, at any time.
+            Study on the go with ease.</Typography>
+      </Box>
+    </Container>
+  )
 }
