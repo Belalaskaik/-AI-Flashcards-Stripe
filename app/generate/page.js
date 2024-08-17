@@ -18,6 +18,9 @@ import {
   CardActionArea,
   CircularProgress
 } from '@mui/material'
+import { useRouter } from 'next/navigation' // Updated import for useRouter
+import { doc, getDoc, writeBatch, collection } from 'firebase/firestore' // Import Firestore functions
+import { db } from '../../firebase';
 
 export default function Generate() {
     const [setName, setSetName] = useState('')
@@ -30,6 +33,8 @@ export default function Generate() {
     const [flippedCards, setFlippedCards] = useState([])
     const [loading, setLoading] = useState(false) // Track loading state
 
+    const router = useRouter(); // Initialize router for redirection
+
     const saveFlashcards = async () => {
         if (!setName.trim()) {
           alert('Please enter a name for your flashcard set.')
@@ -37,7 +42,9 @@ export default function Generate() {
         }
       
         try {
-          const userDocRef = doc(collection(db, 'users'), user.id)
+          // Assuming you have user authentication and user.id is available
+          const userId = "your-user-id"; // Replace with the actual user ID from Firebase Authentication
+          const userDocRef = doc(collection(db, 'users'), userId)
           const userDocSnap = await getDoc(userDocRef)
       
           const batch = writeBatch(db)
@@ -55,9 +62,13 @@ export default function Generate() {
       
           await batch.commit()
       
-          alert('Flashcards saved successfully!')
+          // alert('Flashcards saved successfully!')
           handleCloseDialog()
           setSetName('')
+
+          // Redirect to the flashcards page after saving
+          router.push('/flashcards')
+
         } catch (error) {
           console.error('Error saving flashcards:', error)
           alert('An error occurred while saving flashcards. Please try again.')
