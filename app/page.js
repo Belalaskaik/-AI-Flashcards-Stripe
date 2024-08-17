@@ -1,10 +1,40 @@
-import Image from 'next/image';
+'use client';
+
 import getStripe from '@/utils/get-stripe';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { Container, AppBar, Typography, Toolbar, Button, Box, Grid } from '@mui/material';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 export default function Home() {
+  const router = useRouter(); // Initialize useRouter
+
+  const handleSubmit = async (priceId) => { 
+    console.log(`Price ID: ${priceId} clicked`);
+    try {
+      const checkoutSession = await fetch('/api/checkout_session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ priceId }), // Pass priceId in the request body
+      });
+  
+      const checkoutSessionJson = await checkoutSession.json();
+      console.log(checkoutSessionJson); // Log the session data to check if it was created successfully
+  
+      if (checkoutSessionJson.id) {
+        router.push(`/results?session_id=${checkoutSessionJson.id}`); // Redirect to the results page with session ID
+      } else {
+        console.warn('Failed to create checkout session.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  
+
   return (
     <Container maxWidth="lg">
       <Head>
@@ -79,7 +109,11 @@ export default function Home() {
               <Typography>
                 Access to basic flashcard features and limited storage.
               </Typography>
-              <Button variant='contained' color='primary' sx={{ mt: 2 }}>
+              <Button 
+                variant='contained' 
+                color='primary' 
+                sx={{ mt: 2 }}
+                onClick={() => handleSubmit('price_basic')}> {/* Pass the price ID */}
                 Choose Basic
               </Button>
             </Box>
@@ -96,8 +130,12 @@ export default function Home() {
               <Typography>
                 Unlimited flashcards and storage, with priority support.
               </Typography>
-              <Button variant='contained' color='primary' sx={{ mt: 2 }}>
-                Choose Pro
+              <Button 
+                variant='contained' 
+                color='primary' 
+                sx={{ mt: 2 }}
+                onClick={() => handleSubmit('price_pro')}> {/* Pass the price ID */}
+                Choose Pro 
               </Button>
             </Box>
           </Grid>
@@ -113,7 +151,11 @@ export default function Home() {
               <Typography>
                 All Pro features, plus advanced analytics and custom branding.
               </Typography>
-              <Button variant='contained' color='primary' sx={{ mt: 2 }}>
+              <Button 
+                variant='contained' 
+                color='primary' 
+                sx={{ mt: 2 }}
+                onClick={() => handleSubmit('price_premium')}> {/* Pass the price ID */}
                 Choose Premium
               </Button>
             </Box>
