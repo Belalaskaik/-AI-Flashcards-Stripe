@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Box, Button, Card, CardActionArea, CardContent, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, TextField, Typography, AppBar, Toolbar } from "@mui/material"
+import { Grid, Box, Button, Card, CardActionArea, CardContent, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, TextField, Typography, AppBar, Toolbar, CircularProgress } from "@mui/material"
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -8,11 +8,10 @@ import { db } from "@/firebase"
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import Link from 'next/link'
 
-
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#3e71a1', 
+      main: '#3e71a1',
     },
     secondary: {
       main: '#f1f1f1',
@@ -32,16 +31,22 @@ export default function Generate() {
   const [flipped, setFlipped] = useState([])
   const [text, setText] = useState('')
   const [name, setName] = useState('')
+  const [loading, setLoading] = useState(false) // Loading state
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async () => {
+    setLoading(true) // Start loading
     fetch('api/generate', {
       method: 'POST',
       body: text,
     })
       .then((res) => res.json())
-      .then((data) => setFlashcards(data))
+      .then((data) => {
+        setFlashcards(data)
+        setLoading(false) // Stop loading
+      })
+      .catch(() => setLoading(false)) // Stop loading in case of error
   }
 
   const handleCardClick = (id) => {
@@ -64,16 +69,16 @@ export default function Generate() {
       alert('You must be signed in to save flashcards.');
       return;
     }
-  
+
     if (!name) {
       alert('Please enter a name');
       return;
     }
-  
+
     const batch = writeBatch(db);
     const userDocRef = doc(collection(db, 'users'), user.id);
     const docSnap = await getDoc(userDocRef);
-  
+
     if (docSnap.exists()) {
       const collections = docSnap.data().flashcards || [];
       if (collections.find((f) => f.name === name)) {
@@ -86,18 +91,17 @@ export default function Generate() {
     } else {
       batch.set(userDocRef, { flashcards: [{ name }] });
     }
-  
+
     const colRef = collection(userDocRef, name);
     flashcards.forEach((flashcard) => {
       const cardDocRef = doc(colRef);
       batch.set(cardDocRef, flashcard);
     });
-  
+
     await batch.commit();
     handleClose();
     router.push('/flashcards');
-  };
-  
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -136,13 +140,20 @@ export default function Generate() {
               onClick={handleSubmit}
               fullWidth
               sx={{ p: 1.5, fontSize: '1.1rem', fontWeight: 'bold' }}
+              disabled={loading} // Disable button while loading
             >
               Submit
             </Button>
           </Paper>
         </Box>
 
-        {flashcards.length > 0 && (
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress size={60} />
+          </Box>
+        )}
+
+        {!loading && flashcards.length > 0 && (
           <Box sx={{ mt: 4 }}>
             <Typography variant="h5" color="primary" sx={{ mb: 3 }}>
               Flashcards Preview
