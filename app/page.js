@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import getStripe from '@/utils/get.stripe';
+import getStripe from '@/utils/get-stripe';
 import { Container, AppBar, Toolbar, Button, Typography, Box, Grid, Card, CardContent } from '@mui/material';
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Head from 'next/head';
@@ -9,28 +9,28 @@ import CustomSWRConfig from '../customSWRConfig.js';
 
 export default function Home() {
 
-  const handleSubmit = async () => {
-    const checkoutSession = await fetch('/api/checkout_session', {
-      method: 'POST',
-      headers: {
-        origin: 'http://localhost:3000',
+  const handleSubmit = async (priceId) => {
+    console.log(`Price ID: ${priceId} clicked`); // Log the priceId for debugging
+    try {
+      const checkoutSession = await fetch('/api/checkout_session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ priceId }), // Pass the priceId in the request body
+      });
+
+      const checkoutSessionJson = await checkoutSession.json();
+      console.log(checkoutSessionJson); // Log the session data to check if it was created successfully
+
+      if (checkoutSessionJson.id) {
+        const stripe = await getStripe();
+        await stripe.redirectToCheckout({ sessionId: checkoutSessionJson.id });
+      } else {
+        console.warn('Failed to create checkout session.');
       }
-    })
-
-    const checkoutSessionJson = await checkoutSession.json()
-
-    if (checkoutSession.statusCode === 500) {
-      console.error(checkoutSession.message)
-      return
-    }
-
-    const stripe = await getStripe()
-    const { error } = await stripe.redirectToCheckout({
-      sessionId: checkoutSessionJson.id,
-    })
-
-    if (error) {
-      console.warn(error.message)
+    } catch (error) {
+      console.error('Error:', error);
     }
   }
 
@@ -124,7 +124,13 @@ export default function Home() {
                   <Typography color="textSecondary">
                     Access to basic flashcard features and limited storage.
                   </Typography>
-                  <Button variant="contained" sx={{ bgcolor: '#3e71a1', mt: 3 }}>Choose Basic</Button>
+                  <Button 
+                    variant="contained" 
+                    sx={{ bgcolor: '#3e71a1', mt: 3 }} 
+                    onClick={() => handleSubmit('price_basic')}
+                  >
+                    Choose Basic
+                  </Button>
                 </CardContent>
               </Card>
             </Grid>
@@ -136,7 +142,13 @@ export default function Home() {
                   <Typography color="textSecondary">
                     Unlimited flashcards and storage, and priority support.
                   </Typography>
-                  <Button variant="contained" sx={{ bgcolor: '#3e71a1', mt: 3 }} onClick={handleSubmit}>Choose Pro</Button>
+                  <Button 
+                    variant="contained" 
+                    sx={{ bgcolor: '#3e71a1', mt: 3 }} 
+                    onClick={() => handleSubmit('price_pro')}
+                  >
+                    Choose Pro
+                  </Button>
                 </CardContent>
               </Card>
             </Grid>
