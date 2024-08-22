@@ -105,17 +105,20 @@ export default function Generate() {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* Navbar - Full Width */}
-      <AppBar position="static" sx={{ bgcolor: '#3e71a1', mb: 4 }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            Flashcard Generator
-          </Typography>
-          <Button color="inherit" component={Link} href="/">
-            Home
-          </Button>
-        </Toolbar>
-      </AppBar>
+<AppBar position="static" sx={{ bgcolor: '#3e71a1', boxShadow: 'none' }}>
+  <Toolbar>
+    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold' }}>Flashcard SaaS</Typography>
+    <Button color="inherit" onClick={() => router.back()}>
+      Back
+    </Button>
+    <Button color="inherit" href="/">
+      Home
+    </Button>
+    <Button color="inherit" href="/flashcards">
+      Flashcards
+    </Button>
+  </Toolbar>
+</AppBar>
 
       <Container maxWidth="md">
         {/* Generate Flashcards Section */}
