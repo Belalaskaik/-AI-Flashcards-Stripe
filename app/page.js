@@ -40,19 +40,29 @@ export default function Home() {
         <title>Flashcard SaaS</title>
         <meta name="description" content="Create flashcards from your text" />
       </Head>
-      
-      <AppBar position="static" sx={{ bgcolor: '#3e71a1', boxShadow: 'none' }}>
-  <Toolbar>
-    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold' }}>Flashcard SaaS</Typography>
-    <Button color="inherit" href="/">
-      Home
-    </Button>
-    <Button color="inherit" href="/flashcards">
-      Flashcards
-    </Button>
-  </Toolbar>
-</AppBar>
 
+      <AppBar position="static" sx={{ bgcolor: '#3e71a1', boxShadow: 'none' }}>
+    <Toolbar>
+        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold' }}>Flashcard SaaS</Typography>
+        
+        <Button color="inherit" href="/">
+      Home
+        </Button>
+        
+        <Button color="inherit" href="/flashcards">
+            Flashcards
+        </Button>
+
+        <SignedOut>
+            <Button color="inherit" href="/sign-in">Login</Button>
+            <Button color="inherit" href="/sign-up">Sign Up</Button>
+        </SignedOut>
+        
+        <SignedIn>
+            <UserButton />
+        </SignedIn>
+    </Toolbar>
+</AppBar>
 
 
       <Container maxWidth="xl" sx={{ bgcolor: '#fffff', minHeight: '100vh', py: 0 }}>
